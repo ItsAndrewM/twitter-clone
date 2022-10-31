@@ -48,6 +48,26 @@ const HomeFeed = () => {
         }
     }
 
+    const handleClick = (e) => {
+        e.preventDefault();
+        // setIsToggled(false);
+        console.log(e.currentTarget.value);
+        if (e.target.style.fill === "none") {
+            console.log(e.currentTarget.value);
+            // 
+            // e.target.style.fill = "#F7E0EB";
+            e.stopPropagation();
+        }
+        else if (e.target.style.fill === "#F7E0EB") {
+            console.log("button is filled");
+            e.target.style.fill = "none";
+            e.stopPropagation();
+        }
+
+        
+        // 
+    }
+
     return (
 
             <Wrapper>
@@ -58,6 +78,8 @@ const HomeFeed = () => {
                 <>
                 {tweetIdsArr.map(tweetId => {
                     const tweetMedia = tweetData[tweetId].media;
+                    let isTriggered = false
+                    let numLikes = 0;
                     return (
                     <TweetWrapper>
                         <PicContainer>
@@ -98,7 +120,27 @@ const HomeFeed = () => {
                                     {tweetData[tweetId].numRetweets === 0 ? <></> : <CountLikes>{tweetData[tweetId].numRetweets}</CountLikes>}
                                 </ButtonContainer>
                                 <ButtonContainer >
-                                    <TweetButton value={tweetId} onClick={e => fillButton(e.currentTarget.value)}><Like id={tweetId} style={{fill: isToggled ? "#F7E0EB" : "none"}}/></TweetButton>
+                                    <TweetButton value={tweetId} onClick={(e) => {
+                                        e.preventDefault();
+                                        console.log("clicked")
+                                        if (isTriggered === false) {
+                                            console.log(`${isTriggered}: should be filled`)
+                                            e.target.style.fill = "#F91880";
+                                            document.getElementById(tweetId + "1").textContent = 1
+                                            isTriggered = true;
+                                            numLikes = 1;
+                                            e.stopPropagation();
+                                        }
+                                        else if (isTriggered === true) {
+                                            console.log(`${isTriggered}: should be empty`)
+                                            e.target.style.fill = "none";
+                                            document.getElementById(tweetId + "1").textContent = 0
+                                            isTriggered = false;
+                                            numLikes = 0;
+                                            e.stopPropagation();
+                                        }
+                                        }}>
+                                            <Like id={tweetId} value={isToggled} style={{fill: isTriggered ? "#F7E0EB" : "none"}}/></TweetButton>
                                     <CountLikes id={tweetId + "1"}></CountLikes>
                                 </ButtonContainer>
                                 <ButtonContainer>
@@ -129,7 +171,8 @@ const ButtonContainer = styled.div`
 `
 
 const Wrapper = styled.div`
-    border: 1px solid black;
+    border-right: 1px solid black;
+    border-left: 1px solid black;
     height: auto;
     width: 65%;
     display: flex;
